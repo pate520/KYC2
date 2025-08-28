@@ -520,9 +520,8 @@
             <h4>1. 居住国家或地区选择</h4>
             <ul>
                 <li>支持搜索功能的下拉选择器</li>
-                <li>显示格式：<span class="highlight">英文国家名 + (本土语言名)</span></li>
+                <li>显示格式：<span class="highlight">根据后台返回的多语言数据展示国家名，除了繁体都是英语</span></li>
                 <li>每个选项显示对应的国旗图标</li>
-                <li>包含62个主要国家和地区</li>
                 <li>排除中国</li>
             </ul>
 
@@ -780,79 +779,18 @@
                     },
                     // 页面加载状态
                     isLoading: true,
-                    // 精选国家列表 - 包含主要国家和地区
+                    // 精选国家列表 - 支持多语言（前10个示例）
                     countries: [
-                        // 必须包含的国家（按用户要求）
-                        { code: 'AE', name: 'United Arab Emirates (الإمارات العربية المتحدة)', locale: 'ar', flagUrl: 'https://flagcdn.com/w40/ae.png' },
-                        { code: 'TW', name: 'Taiwan (台灣)', locale: 'zh-TW', flagUrl: 'https://flagcdn.com/w40/tw.png' },
-                        { code: 'BR', name: 'Brazil (Brasil)', locale: 'pt-BR', flagUrl: 'https://flagcdn.com/w40/br.png' },
-                        { code: 'AU', name: 'Australia', locale: 'en-AU', flagUrl: 'https://flagcdn.com/w40/au.png' },
-                        { code: 'FR', name: 'France', locale: 'fr-FR', flagUrl: 'https://flagcdn.com/w40/fr.png' },
-                        { code: 'DE', name: 'Germany (Deutschland)', locale: 'de-DE', flagUrl: 'https://flagcdn.com/w40/de.png' },
-                        { code: 'MX', name: 'Mexico (México)', locale: 'es-MX', flagUrl: 'https://flagcdn.com/w40/mx.png' },
-                        { code: 'GB', name: 'United Kingdom', locale: 'en-GB', flagUrl: 'https://flagcdn.com/w40/gb.png' },
-                        { code: 'ES', name: 'Spain (España)', locale: 'es-ES', flagUrl: 'https://flagcdn.com/w40/es.png' },
-                        { code: 'JP', name: 'Japan (日本)', locale: 'ja-JP', flagUrl: 'https://flagcdn.com/w40/jp.png' },
-
-                        // 其他主要国家和地区
                         { code: 'US', name: 'United States', locale: 'en-US', flagUrl: 'https://flagcdn.com/w40/us.png' },
+                        { code: 'GB', name: 'United Kingdom', locale: 'en-GB', flagUrl: 'https://flagcdn.com/w40/gb.png' },
+                        { code: 'JP', name: 'Japan', locale: 'ja-JP', flagUrl: 'https://flagcdn.com/w40/jp.png' },
+                        { code: 'KR', name: 'South Korea', locale: 'ko-KR', flagUrl: 'https://flagcdn.com/w40/kr.png' },
+                        { code: 'DE', name: 'Germany', locale: 'de-DE', flagUrl: 'https://flagcdn.com/w40/de.png' },
+                        { code: 'FR', name: 'France', locale: 'fr-FR', flagUrl: 'https://flagcdn.com/w40/fr.png' },
+                        { code: 'AU', name: 'Australia', locale: 'en-AU', flagUrl: 'https://flagcdn.com/w40/au.png' },
                         { code: 'CA', name: 'Canada', locale: 'en-CA', flagUrl: 'https://flagcdn.com/w40/ca.png' },
-                        { code: 'KR', name: 'South Korea (대한민국)', locale: 'ko-KR', flagUrl: 'https://flagcdn.com/w40/kr.png' },
                         { code: 'SG', name: 'Singapore', locale: 'en-SG', flagUrl: 'https://flagcdn.com/w40/sg.png' },
-                        { code: 'HK', name: 'Hong Kong (香港)', locale: 'zh-HK', flagUrl: 'https://flagcdn.com/w40/hk.png' },
-                        { code: 'MY', name: 'Malaysia', locale: 'ms-MY', flagUrl: 'https://flagcdn.com/w40/my.png' },
-                        { code: 'TH', name: 'Thailand (ประเทศไทย)', locale: 'th-TH', flagUrl: 'https://flagcdn.com/w40/th.png' },
-                        { code: 'VN', name: 'Vietnam (Việt Nam)', locale: 'vi-VN', flagUrl: 'https://flagcdn.com/w40/vn.png' },
-                        { code: 'PH', name: 'Philippines', locale: 'en-PH', flagUrl: 'https://flagcdn.com/w40/ph.png' },
-                        { code: 'ID', name: 'Indonesia', locale: 'id-ID', flagUrl: 'https://flagcdn.com/w40/id.png' },
-                        { code: 'IN', name: 'India (भारत)', locale: 'hi-IN', flagUrl: 'https://flagcdn.com/w40/in.png' },
-                        { code: 'RU', name: 'Russia (Россия)', locale: 'ru-RU', flagUrl: 'https://flagcdn.com/w40/ru.png' },
-                        { code: 'IT', name: 'Italy (Italia)', locale: 'it-IT', flagUrl: 'https://flagcdn.com/w40/it.png' },
-                        { code: 'NL', name: 'Netherlands (Nederland)', locale: 'nl-NL', flagUrl: 'https://flagcdn.com/w40/nl.png' },
-                        { code: 'CH', name: 'Switzerland (Schweiz)', locale: 'de-CH', flagUrl: 'https://flagcdn.com/w40/ch.png' },
-                        { code: 'AT', name: 'Austria (Österreich)', locale: 'de-AT', flagUrl: 'https://flagcdn.com/w40/at.png' },
-                        { code: 'BE', name: 'Belgium (België)', locale: 'nl-BE', flagUrl: 'https://flagcdn.com/w40/be.png' },
-                        { code: 'SE', name: 'Sweden (Sverige)', locale: 'sv-SE', flagUrl: 'https://flagcdn.com/w40/se.png' },
-                        { code: 'NO', name: 'Norway (Norge)', locale: 'no-NO', flagUrl: 'https://flagcdn.com/w40/no.png' },
-                        { code: 'DK', name: 'Denmark (Danmark)', locale: 'da-DK', flagUrl: 'https://flagcdn.com/w40/dk.png' },
-                        { code: 'FI', name: 'Finland (Suomi)', locale: 'fi-FI', flagUrl: 'https://flagcdn.com/w40/fi.png' },
-                        { code: 'PL', name: 'Poland (Polska)', locale: 'pl-PL', flagUrl: 'https://flagcdn.com/w40/pl.png' },
-                        { code: 'CZ', name: 'Czech Republic (Česká republika)', locale: 'cs-CZ', flagUrl: 'https://flagcdn.com/w40/cz.png' },
-                        { code: 'HU', name: 'Hungary (Magyarország)', locale: 'hu-HU', flagUrl: 'https://flagcdn.com/w40/hu.png' },
-                        { code: 'PT', name: 'Portugal', locale: 'pt-PT', flagUrl: 'https://flagcdn.com/w40/pt.png' },
-                        { code: 'GR', name: 'Greece (Ελλάδα)', locale: 'el-GR', flagUrl: 'https://flagcdn.com/w40/gr.png' },
-                        { code: 'TR', name: 'Turkey (Türkiye)', locale: 'tr-TR', flagUrl: 'https://flagcdn.com/w40/tr.png' },
-                        { code: 'IL', name: 'Israel (ישראל)', locale: 'he-IL', flagUrl: 'https://flagcdn.com/w40/il.png' },
-                        { code: 'SA', name: 'Saudi Arabia (المملكة العربية السعودية)', locale: 'ar-SA', flagUrl: 'https://flagcdn.com/w40/sa.png' },
-                        { code: 'EG', name: 'Egypt (مصر)', locale: 'ar-EG', flagUrl: 'https://flagcdn.com/w40/eg.png' },
-                        { code: 'ZA', name: 'South Africa', locale: 'en-ZA', flagUrl: 'https://flagcdn.com/w40/za.png' },
-                        { code: 'NG', name: 'Nigeria', locale: 'en-NG', flagUrl: 'https://flagcdn.com/w40/ng.png' },
-                        { code: 'KE', name: 'Kenya', locale: 'en-KE', flagUrl: 'https://flagcdn.com/w40/ke.png' },
-                        { code: 'AR', name: 'Argentina', locale: 'es-AR', flagUrl: 'https://flagcdn.com/w40/ar.png' },
-                        { code: 'CL', name: 'Chile', locale: 'es-CL', flagUrl: 'https://flagcdn.com/w40/cl.png' },
-                        { code: 'CO', name: 'Colombia', locale: 'es-CO', flagUrl: 'https://flagcdn.com/w40/co.png' },
-                        { code: 'PE', name: 'Peru (Perú)', locale: 'es-PE', flagUrl: 'https://flagcdn.com/w40/pe.png' },
-                        { code: 'NZ', name: 'New Zealand', locale: 'en-NZ', flagUrl: 'https://flagcdn.com/w40/nz.png' },
-                        { code: 'BD', name: 'Bangladesh (বাংলাদেশ)', locale: 'bn-BD', flagUrl: 'https://flagcdn.com/w40/bd.png' },
-                        { code: 'PK', name: 'Pakistan (پاکستان)', locale: 'ur-PK', flagUrl: 'https://flagcdn.com/w40/pk.png' },
-                        { code: 'LK', name: 'Sri Lanka (ශ්‍රී ලංකා)', locale: 'si-LK', flagUrl: 'https://flagcdn.com/w40/lk.png' },
-                        { code: 'MM', name: 'Myanmar (မြန်မာ)', locale: 'my-MM', flagUrl: 'https://flagcdn.com/w40/mm.png' },
-                        { code: 'KH', name: 'Cambodia (កម្ពុជា)', locale: 'km-KH', flagUrl: 'https://flagcdn.com/w40/kh.png' },
-                        { code: 'LA', name: 'Laos (ລາວ)', locale: 'lo-LA', flagUrl: 'https://flagcdn.com/w40/la.png' },
-                        { code: 'BN', name: 'Brunei', locale: 'ms-BN', flagUrl: 'https://flagcdn.com/w40/bn.png' },
-                        { code: 'MN', name: 'Mongolia (Монгол)', locale: 'mn-MN', flagUrl: 'https://flagcdn.com/w40/mn.png' },
-                        { code: 'KZ', name: 'Kazakhstan (Қазақстан)', locale: 'kk-KZ', flagUrl: 'https://flagcdn.com/w40/kz.png' },
-                        { code: 'UZ', name: 'Uzbekistan (Oʻzbekiston)', locale: 'uz-UZ', flagUrl: 'https://flagcdn.com/w40/uz.png' },
-                        { code: 'UA', name: 'Ukraine (Україна)', locale: 'uk-UA', flagUrl: 'https://flagcdn.com/w40/ua.png' },
-                        { code: 'BY', name: 'Belarus (Беларусь)', locale: 'be-BY', flagUrl: 'https://flagcdn.com/w40/by.png' },
-                        { code: 'LT', name: 'Lithuania (Lietuva)', locale: 'lt-LT', flagUrl: 'https://flagcdn.com/w40/lt.png' },
-                        { code: 'LV', name: 'Latvia (Latvija)', locale: 'lv-LV', flagUrl: 'https://flagcdn.com/w40/lv.png' },
-                        { code: 'EE', name: 'Estonia (Eesti)', locale: 'et-EE', flagUrl: 'https://flagcdn.com/w40/ee.png' },
-                        { code: 'IE', name: 'Ireland (Éire)', locale: 'en-IE', flagUrl: 'https://flagcdn.com/w40/ie.png' },
-                        { code: 'IS', name: 'Iceland (Ísland)', locale: 'is-IS', flagUrl: 'https://flagcdn.com/w40/is.png' },
-                        { code: 'LU', name: 'Luxembourg', locale: 'fr-LU', flagUrl: 'https://flagcdn.com/w40/lu.png' },
-                        { code: 'MT', name: 'Malta', locale: 'mt-MT', flagUrl: 'https://flagcdn.com/w40/mt.png' },
-                        { code: 'CY', name: 'Cyprus (Κύπρος)', locale: 'el-CY', flagUrl: 'https://flagcdn.com/w40/cy.png' }
+                        { code: 'HK', name: 'Hong Kong', locale: 'zh-HK', flagUrl: 'https://flagcdn.com/w40/hk.png' }
                     ],
                     // 搜索关键词
                     searchKeyword: ''
@@ -1138,6 +1076,9 @@
                 this.$nextTick(() => {
                     this.isLoading = false;
                 });
+
+                // 初始化多语言国家名称
+                this.initializeCountryNames();
 
                 // 监听来自父页面的消息（如果在iframe中）
                 window.addEventListener('message', (event) => {

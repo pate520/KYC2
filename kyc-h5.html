@@ -548,7 +548,7 @@
                 <li><span class="highlight">驾驶证</span>：正面 + 反面</li>
                 <li><span class="highlight">永久居留证</span>：正面 + 反面</li>
                 <li>文件大小限制：最大 5MB</li>
-                <li>支持格式：JPG、PNG</li>
+                <li>支持格式：JPG、PNG、GIF、HEIF</li>
                 <li>显示占位图和上传提示</li>
             </ul>
 
@@ -686,12 +686,12 @@
                                         :show-file-list="false"
                                         :before-upload="beforeUpload"
                                         :on-success="(response, file) => handleUploadSuccess(response, file, uploadType.key)"
-                                        accept="image/*">
+                                        accept="image/jpeg,image/jpg,image/png,image/gif,image/heif,image/heic">
                                         <div class="upload-placeholder" v-if="!formData.documents[uploadType.key]">
                                             <i class="el-icon-plus"></i>
                                             <div class="upload-text">
                                                 <p>点击上传<span v-text="uploadType.label"></span></p>
-                                                <p class="upload-tips">支持 JPG、PNG 格式，最大 5MB</p>
+                                                <p class="upload-tips">支持 JPG、PNG、GIF、HEIF 格式，最大 5MB</p>
                                             </div>
                                         </div>
                                         <div class="uploaded-image" v-else>
@@ -940,11 +940,21 @@
                 
                 // 文件上传前的检查
                 beforeUpload(file) {
-                    const isImage = file.type.startsWith('image/');
+                    // 支持的图片格式
+                    const allowedTypes = [
+                        'image/jpeg',
+                        'image/jpg',
+                        'image/png',
+                        'image/gif',
+                        'image/heif',
+                        'image/heic'
+                    ];
+
+                    const isValidType = allowedTypes.includes(file.type.toLowerCase()) || file.type.startsWith('image/');
                     const isLt5M = file.size / 1024 / 1024 < 5;
-                    
-                    if (!isImage) {
-                        this.$message.error('只能上传图片文件!');
+
+                    if (!isValidType) {
+                        this.$message.error('只能上传 JPG、PNG、GIF、HEIF 格式的图片文件!');
                         return false;
                     }
                     if (!isLt5M) {

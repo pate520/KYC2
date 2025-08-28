@@ -25,10 +25,66 @@
             line-height: 1.6;
         }
 
+        /* 主容器样式 */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+        }
+
+        /* 需求文档面板 */
+        .requirements-panel {
+            width: 350px;
+            background-color: #ffffff;
+            border-right: 1px solid #ebeef5;
+            padding: 20px;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        .requirements-panel h3 {
+            color: #409EFF;
+            font-size: 16px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #409EFF;
+            padding-bottom: 8px;
+        }
+
+        .requirements-panel h4 {
+            color: #303133;
+            font-size: 14px;
+            margin: 12px 0 8px 0;
+        }
+
+        .requirements-panel ul {
+            margin: 0 0 16px 0;
+            padding-left: 16px;
+        }
+
+        .requirements-panel li {
+            font-size: 13px;
+            color: #606266;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .requirements-panel .highlight {
+            background-color: #f0f9ff;
+            color: #409EFF;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
         /* 容器样式 */
         .kyc-container {
             max-width: 480px;
             margin: 0 auto;
+            margin-left: 350px;
             min-height: 100vh;
             background-color: #ffffff;
             display: flex;
@@ -411,6 +467,17 @@
         }
 
         /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .requirements-panel {
+                display: none;
+            }
+
+            .kyc-container {
+                margin-left: 0;
+                max-width: 480px;
+            }
+        }
+
         @media (max-width: 480px) {
             .kyc-container {
                 max-width: 100%;
@@ -424,10 +491,6 @@
                 padding: 16px;
             }
 
-            .progress-container {
-                padding: 0 16px 16px;
-            }
-
             .footer {
                 padding: 16px;
             }
@@ -436,7 +499,65 @@
 </head>
 <body>
     <div id="app" v-cloak>
-        <div class="kyc-container">
+        <!-- 需求文档面板 -->
+        <div class="requirements-panel">
+            <h3>KYC 身份认证需求</h3>
+
+            <h4>1. 居住国家或地区选择</h4>
+            <ul>
+                <li>支持搜索功能的下拉选择器</li>
+                <li>显示格式：<span class="highlight">英文国家名 + (本土语言名)</span></li>
+                <li>每个选项显示对应的国旗图标</li>
+                <li>包含62个主要国家和地区</li>
+                <li>排除中国，包含台湾</li>
+            </ul>
+
+            <h4>2. 证件类型选择</h4>
+            <ul>
+                <li>默认选中：<span class="highlight">护照</span></li>
+                <li>下拉选项：身份证、驾驶证、永久居留证</li>
+                <li>根据证件类型动态调整上传要求</li>
+            </ul>
+
+            <h4>3. 个人信息输入</h4>
+            <ul>
+                <li>名字（First Name）</li>
+                <li>姓氏（Last Name）</li>
+                <li>证件号码</li>
+                <li>实时表单验证和错误提示</li>
+            </ul>
+
+            <h4>4. 证件照片上传</h4>
+            <ul>
+                <li><span class="highlight">护照</span>：个人信息页 + 头像页</li>
+                <li><span class="highlight">身份证</span>：正面 + 反面</li>
+                <li><span class="highlight">驾驶证</span>：正面 + 反面</li>
+                <li><span class="highlight">永久居留证</span>：正面 + 反面</li>
+                <li>文件大小限制：最大 5MB</li>
+                <li>支持格式：JPG、PNG</li>
+                <li>显示占位图和上传提示</li>
+            </ul>
+
+            <h4>5. 技术要求</h4>
+            <ul>
+                <li>H5 页面，适配移动端</li>
+                <li>支持 WebView 集成</li>
+                <li>替换 Sumsub 第三方服务</li>
+                <li>长页面设计，一次性展示所有内容</li>
+                <li>响应式布局，触摸友好</li>
+            </ul>
+
+            <h4>6. 集成方式</h4>
+            <ul>
+                <li>Android WebView 加载</li>
+                <li>JavaScript Bridge 通信</li>
+                <li>PostMessage API 支持</li>
+                <li>提交成功后通知原生 APP</li>
+            </ul>
+        </div>
+
+        <div class="main-container">
+            <div class="kyc-container">
             <!-- 头部 -->
             <div class="header">
                 <div class="header-content">
@@ -619,6 +740,7 @@
                     提交认证
                 </el-button>
             </div>
+        </div>
         </div>
     </div>
 

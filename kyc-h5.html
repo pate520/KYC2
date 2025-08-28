@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>身份认证 - BITDU</title>
+    
+    <!-- Element UI CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+
+    
+    <style>
+        /* 重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #303133;
+            line-height: 1.6;
+        }
+
+        /* 容器样式 */
+        .kyc-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部样式 */
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ebeef5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            height: 56px;
+        }
+
+        .back-btn {
+            font-size: 20px;
+            color: #409EFF;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: -8px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #303133;
+            flex: 1;
+            text-align: center;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #909399;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            padding: 0 20px 16px;
+            background-color: #ffffff;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            padding: 24px 20px;
+            overflow-y: auto;
+        }
+
+        .step-content {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 长页面表单样式 */
+        .long-form {
+            max-width: 100%;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #ebeef5;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #303133;
+            margin-bottom: 8px;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: #606266;
+            line-height: 1.5;
+        }
+
+        /* 表单行布局 */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .half-width {
+            flex: 1;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #303133;
+            margin-bottom: 8px;
+        }
+
+        .country-select {
+            width: 100%;
+        }
+
+        .country-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .country-flag {
+            width: 24px;
+            height: 18px;
+            margin-right: 8px;
+            border-radius: 2px;
+            display: inline-block;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        /* Element UI 组件自定义样式 */
+        .el-select,
+        .el-input {
+            width: 100%;
+        }
+
+        .el-select .el-input__inner,
+        .el-input__inner {
+            height: 48px;
+            line-height: 48px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe6;
+            font-size: 16px;
+            padding: 0 16px;
+        }
+
+        .el-select .el-input__inner:focus,
+        .el-input__inner:focus {
+            border-color: #409EFF;
+        }
+
+        /* 上传区域样式 */
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .upload-item {
+            width: 100%;
+        }
+
+        .upload-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #303133;
+            margin-bottom: 8px;
+        }
+
+        .upload-area {
+            width: 100%;
+        }
+
+        .el-upload {
+            width: 100%;
+        }
+
+        .upload-placeholder {
+            width: 100%;
+            height: 160px;
+            border: 2px dashed #dcdfe6;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #fafafa;
+        }
+
+        .upload-placeholder:hover {
+            border-color: #409EFF;
+            background-color: #f0f9ff;
+        }
+
+        .upload-placeholder .el-icon-plus {
+            font-size: 32px;
+            color: #c0c4cc;
+            margin-bottom: 12px;
+        }
+
+        .upload-text p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #606266;
+        }
+
+        .upload-tips {
+            font-size: 12px !important;
+            color: #909399 !important;
+        }
+
+        .uploaded-image {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .uploaded-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .uploaded-image:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .upload-overlay .el-icon-edit {
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        /* 确认页面样式 */
+        .confirm-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .confirm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #ebeef5;
+        }
+
+        .confirm-item:last-child {
+            border-bottom: none;
+        }
+
+        .confirm-item label {
+            font-weight: 500;
+            color: #606266;
+            min-width: 100px;
+        }
+
+        .confirm-item span {
+            color: #303133;
+            text-align: right;
+            flex: 1;
+        }
+
+        .uploaded-docs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .doc-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .doc-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 底部按钮 */
+        .footer {
+            padding: 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #ebeef5;
+        }
+
+        .next-btn,
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+
+        /* 表单验证样式 */
+        .error-message {
+            color: #f56c6c;
+            font-size: 12px;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .el-input.error .el-input__inner {
+            border-color: #f56c6c;
+        }
+
+        .el-input.error .el-input__inner:focus {
+            border-color: #f56c6c;
+            box-shadow: 0 0 0 2px rgba(245, 108, 108, 0.2);
+        }
+
+        .el-select.error .el-input__inner {
+            border-color: #f56c6c;
+        }
+
+        /* Vue.js 防闪烁 */
+        [v-cloak] {
+            display: none !important;
+        }
+
+        /* 加载状态 */
+        .loading-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            color: #909399;
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .kyc-container {
+                max-width: 100%;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .header-content {
+                padding: 16px;
+            }
+
+            .progress-container {
+                padding: 0 16px 16px;
+            }
+
+            .footer {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <div class="kyc-container">
+            <!-- 头部 -->
+            <div class="header">
+                <div class="header-content">
+                    <h1 class="title">身份认证</h1>
+                </div>
+            </div>
+
+            <!-- 内容区域 - 长页面版本 -->
+            <div class="content">
+                <div class="long-form">
+                    <!-- 第一部分: 居住国家/地区选择 -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h2>1. 居住国家或地区</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">居住国家/地区 *</label>
+                            <el-select
+                                v-model="formData.country"
+                                placeholder="请选择国家或地区"
+                                filterable
+                                class="country-select"
+                                v-if="countries.length > 0">
+                                <el-option
+                                    v-for="country in filteredCountries"
+                                    :key="country.code"
+                                    :label="country.name"
+                                    :value="country.code">
+                                    <span class="country-option">
+                                        <img :src="country.flagUrl" :alt="country.name" class="country-flag">
+                                        <span v-text="country.name"></span>
+                                    </span>
+                                </el-option>
+                            </el-select>
+                            <div v-else class="loading-placeholder">
+                                正在加载国家列表...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第二部分: 证件类型和个人信息 -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h2>2. 证件类型和个人信息</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">证件类型 *</label>
+                            <el-select v-model="formData.documentType" placeholder="请选择证件类型">
+                                <el-option label="护照" value="passport"></el-option>
+                                <el-option label="身份证" value="id_card"></el-option>
+                                <el-option label="驾驶证" value="driving_license"></el-option>
+                                <el-option label="永久居留证" value="residence_permit"></el-option>
+                            </el-select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label class="form-label">名字 *</label>
+                                <el-input
+                                    v-model="formData.firstName"
+                                    placeholder="请输入名字"
+                                    maxlength="50"
+                                    :class="{ 'error': errors.firstName }"
+                                    @blur="validateFirstName">
+                                </el-input>
+                                <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
+                            </div>
+
+                            <div class="form-group half-width">
+                                <label class="form-label">姓氏 *</label>
+                                <el-input
+                                    v-model="formData.lastName"
+                                    placeholder="请输入姓氏"
+                                    maxlength="50"
+                                    :class="{ 'error': errors.lastName }"
+                                    @blur="validateLastName">
+                                </el-input>
+                                <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">证件号码 *</label>
+                            <el-input
+                                v-model="formData.documentNumber"
+                                placeholder="请输入证件号码"
+                                maxlength="30"
+                                :class="{ 'error': errors.documentNumber }"
+                                @blur="validateDocumentNumber">
+                            </el-input>
+                            <div v-if="errors.documentNumber" class="error-message">{{ errors.documentNumber }}</div>
+                        </div>
+                    </div>
+
+                    <!-- 第三部分: 证件照片上传 -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h2>3. 证件照片上传</h2>
+                            <p class="section-desc" v-text="getUploadDescription()"></p>
+                        </div>
+
+                        <div class="upload-section">
+                            <div v-for="(uploadType, index) in getUploadTypes()"
+                                 :key="index"
+                                 class="upload-item">
+                                <label class="upload-label">{{ uploadType.label }} *</label>
+                                <div class="upload-area">
+                                    <el-upload
+                                        :action="uploadAction"
+                                        :show-file-list="false"
+                                        :before-upload="beforeUpload"
+                                        :on-success="(response, file) => handleUploadSuccess(response, file, uploadType.key)"
+                                        accept="image/*">
+                                        <div class="upload-placeholder" v-if="!formData.documents[uploadType.key]">
+                                            <i class="el-icon-plus"></i>
+                                            <div class="upload-text">
+                                                <p>点击上传<span v-text="uploadType.label"></span></p>
+                                                <p class="upload-tips">支持 JPG、PNG 格式，最大 5MB</p>
+                                            </div>
+                                        </div>
+                                        <div class="uploaded-image" v-else>
+                                            <img :src="formData.documents[uploadType.key]" alt="已上传图片">
+                                            <div class="upload-overlay">
+                                                <i class="el-icon-edit"></i>
+                                            </div>
+                                        </div>
+                                    </el-upload>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第四部分: 确认信息 -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h2>4. 信息确认</h2>
+                        </div>
+
+                        <div class="confirm-section">
+                            <div class="confirm-item">
+                                <label>居住国家/地区:</label>
+                                <span v-text="getCountryName(formData.country)"></span>
+                            </div>
+                            <div class="confirm-item">
+                                <label>证件类型:</label>
+                                <span v-text="getDocumentTypeName(formData.documentType)"></span>
+                            </div>
+                            <div class="confirm-item">
+                                <label>姓名:</label>
+                                <span>{{ formData.firstName }} {{ formData.lastName }}</span>
+                            </div>
+                            <div class="confirm-item">
+                                <label>证件号码:</label>
+                                <span v-text="formData.documentNumber"></span>
+                            </div>
+                            <div class="confirm-item">
+                                <label>上传的证件:</label>
+                                <div class="uploaded-docs">
+                                    <div v-for="(url, key) in formData.documents" :key="key" class="doc-preview">
+                                        <img :src="url" :alt="key">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="footer">
+                <el-button
+                    type="primary"
+                    size="large"
+                    :loading="submitting"
+                    :disabled="!canSubmit()"
+                    @click="submitForm"
+                    class="submit-btn">
+                    提交认证
+                </el-button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <!-- Element UI JS -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    
+    <script>
+        // Vue 应用实例
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    submitting: false,
+                    uploadAction: '#', // 这里应该是实际的上传接口
+                    formData: {
+                        country: '',
+                        documentType: 'passport', // 默认选择护照
+                        firstName: '',
+                        lastName: '',
+                        documentNumber: '',
+                        documents: {}
+                    },
+                    // 表单验证错误信息
+                    errors: {
+                        firstName: '',
+                        lastName: '',
+                        documentNumber: '',
+                        country: ''
+                    },
+                    // 页面加载状态
+                    isLoading: true,
+                    // 精选国家列表 - 包含主要国家和地区
+                    countries: [
+                        // 必须包含的国家（按用户要求）
+                        { code: 'AE', name: 'United Arab Emirates (الإمارات العربية المتحدة)', locale: 'ar', flagUrl: 'https://flagcdn.com/w40/ae.png' },
+                        { code: 'TW', name: 'Taiwan (台灣)', locale: 'zh-TW', flagUrl: 'https://flagcdn.com/w40/tw.png' },
+                        { code: 'BR', name: 'Brazil (Brasil)', locale: 'pt-BR', flagUrl: 'https://flagcdn.com/w40/br.png' },
+                        { code: 'AU', name: 'Australia', locale: 'en-AU', flagUrl: 'https://flagcdn.com/w40/au.png' },
+                        { code: 'FR', name: 'France', locale: 'fr-FR', flagUrl: 'https://flagcdn.com/w40/fr.png' },
+                        { code: 'DE', name: 'Germany (Deutschland)', locale: 'de-DE', flagUrl: 'https://flagcdn.com/w40/de.png' },
+                        { code: 'MX', name: 'Mexico (México)', locale: 'es-MX', flagUrl: 'https://flagcdn.com/w40/mx.png' },
+                        { code: 'GB', name: 'United Kingdom', locale: 'en-GB', flagUrl: 'https://flagcdn.com/w40/gb.png' },
+                        { code: 'ES', name: 'Spain (España)', locale: 'es-ES', flagUrl: 'https://flagcdn.com/w40/es.png' },
+                        { code: 'JP', name: 'Japan (日本)', locale: 'ja-JP', flagUrl: 'https://flagcdn.com/w40/jp.png' },
+
+                        // 其他主要国家和地区
+                        { code: 'US', name: 'United States', locale: 'en-US', flagUrl: 'https://flagcdn.com/w40/us.png' },
+                        { code: 'CA', name: 'Canada', locale: 'en-CA', flagUrl: 'https://flagcdn.com/w40/ca.png' },
+                        { code: 'KR', name: 'South Korea (대한민국)', locale: 'ko-KR', flagUrl: 'https://flagcdn.com/w40/kr.png' },
+                        { code: 'SG', name: 'Singapore', locale: 'en-SG', flagUrl: 'https://flagcdn.com/w40/sg.png' },
+                        { code: 'HK', name: 'Hong Kong (香港)', locale: 'zh-HK', flagUrl: 'https://flagcdn.com/w40/hk.png' },
+                        { code: 'MY', name: 'Malaysia', locale: 'ms-MY', flagUrl: 'https://flagcdn.com/w40/my.png' },
+                        { code: 'TH', name: 'Thailand (ประเทศไทย)', locale: 'th-TH', flagUrl: 'https://flagcdn.com/w40/th.png' },
+                        { code: 'VN', name: 'Vietnam (Việt Nam)', locale: 'vi-VN', flagUrl: 'https://flagcdn.com/w40/vn.png' },
+                        { code: 'PH', name: 'Philippines', locale: 'en-PH', flagUrl: 'https://flagcdn.com/w40/ph.png' },
+                        { code: 'ID', name: 'Indonesia', locale: 'id-ID', flagUrl: 'https://flagcdn.com/w40/id.png' },
+                        { code: 'IN', name: 'India (भारत)', locale: 'hi-IN', flagUrl: 'https://flagcdn.com/w40/in.png' },
+                        { code: 'RU', name: 'Russia (Россия)', locale: 'ru-RU', flagUrl: 'https://flagcdn.com/w40/ru.png' },
+                        { code: 'IT', name: 'Italy (Italia)', locale: 'it-IT', flagUrl: 'https://flagcdn.com/w40/it.png' },
+                        { code: 'NL', name: 'Netherlands (Nederland)', locale: 'nl-NL', flagUrl: 'https://flagcdn.com/w40/nl.png' },
+                        { code: 'CH', name: 'Switzerland (Schweiz)', locale: 'de-CH', flagUrl: 'https://flagcdn.com/w40/ch.png' },
+                        { code: 'AT', name: 'Austria (Österreich)', locale: 'de-AT', flagUrl: 'https://flagcdn.com/w40/at.png' },
+                        { code: 'BE', name: 'Belgium (België)', locale: 'nl-BE', flagUrl: 'https://flagcdn.com/w40/be.png' },
+                        { code: 'SE', name: 'Sweden (Sverige)', locale: 'sv-SE', flagUrl: 'https://flagcdn.com/w40/se.png' },
+                        { code: 'NO', name: 'Norway (Norge)', locale: 'no-NO', flagUrl: 'https://flagcdn.com/w40/no.png' },
+                        { code: 'DK', name: 'Denmark (Danmark)', locale: 'da-DK', flagUrl: 'https://flagcdn.com/w40/dk.png' },
+                        { code: 'FI', name: 'Finland (Suomi)', locale: 'fi-FI', flagUrl: 'https://flagcdn.com/w40/fi.png' },
+                        { code: 'PL', name: 'Poland (Polska)', locale: 'pl-PL', flagUrl: 'https://flagcdn.com/w40/pl.png' },
+                        { code: 'CZ', name: 'Czech Republic (Česká republika)', locale: 'cs-CZ', flagUrl: 'https://flagcdn.com/w40/cz.png' },
+                        { code: 'HU', name: 'Hungary (Magyarország)', locale: 'hu-HU', flagUrl: 'https://flagcdn.com/w40/hu.png' },
+                        { code: 'PT', name: 'Portugal', locale: 'pt-PT', flagUrl: 'https://flagcdn.com/w40/pt.png' },
+                        { code: 'GR', name: 'Greece (Ελλάδα)', locale: 'el-GR', flagUrl: 'https://flagcdn.com/w40/gr.png' },
+                        { code: 'TR', name: 'Turkey (Türkiye)', locale: 'tr-TR', flagUrl: 'https://flagcdn.com/w40/tr.png' },
+                        { code: 'IL', name: 'Israel (ישראל)', locale: 'he-IL', flagUrl: 'https://flagcdn.com/w40/il.png' },
+                        { code: 'SA', name: 'Saudi Arabia (المملكة العربية السعودية)', locale: 'ar-SA', flagUrl: 'https://flagcdn.com/w40/sa.png' },
+                        { code: 'EG', name: 'Egypt (مصر)', locale: 'ar-EG', flagUrl: 'https://flagcdn.com/w40/eg.png' },
+                        { code: 'ZA', name: 'South Africa', locale: 'en-ZA', flagUrl: 'https://flagcdn.com/w40/za.png' },
+                        { code: 'NG', name: 'Nigeria', locale: 'en-NG', flagUrl: 'https://flagcdn.com/w40/ng.png' },
+                        { code: 'KE', name: 'Kenya', locale: 'en-KE', flagUrl: 'https://flagcdn.com/w40/ke.png' },
+                        { code: 'AR', name: 'Argentina', locale: 'es-AR', flagUrl: 'https://flagcdn.com/w40/ar.png' },
+                        { code: 'CL', name: 'Chile', locale: 'es-CL', flagUrl: 'https://flagcdn.com/w40/cl.png' },
+                        { code: 'CO', name: 'Colombia', locale: 'es-CO', flagUrl: 'https://flagcdn.com/w40/co.png' },
+                        { code: 'PE', name: 'Peru (Perú)', locale: 'es-PE', flagUrl: 'https://flagcdn.com/w40/pe.png' },
+                        { code: 'NZ', name: 'New Zealand', locale: 'en-NZ', flagUrl: 'https://flagcdn.com/w40/nz.png' },
+                        { code: 'BD', name: 'Bangladesh (বাংলাদেশ)', locale: 'bn-BD', flagUrl: 'https://flagcdn.com/w40/bd.png' },
+                        { code: 'PK', name: 'Pakistan (پاکستان)', locale: 'ur-PK', flagUrl: 'https://flagcdn.com/w40/pk.png' },
+                        { code: 'LK', name: 'Sri Lanka (ශ්‍රී ලංකා)', locale: 'si-LK', flagUrl: 'https://flagcdn.com/w40/lk.png' },
+                        { code: 'MM', name: 'Myanmar (မြန်မာ)', locale: 'my-MM', flagUrl: 'https://flagcdn.com/w40/mm.png' },
+                        { code: 'KH', name: 'Cambodia (កម្ពុជា)', locale: 'km-KH', flagUrl: 'https://flagcdn.com/w40/kh.png' },
+                        { code: 'LA', name: 'Laos (ລາວ)', locale: 'lo-LA', flagUrl: 'https://flagcdn.com/w40/la.png' },
+                        { code: 'BN', name: 'Brunei', locale: 'ms-BN', flagUrl: 'https://flagcdn.com/w40/bn.png' },
+                        { code: 'MN', name: 'Mongolia (Монгол)', locale: 'mn-MN', flagUrl: 'https://flagcdn.com/w40/mn.png' },
+                        { code: 'KZ', name: 'Kazakhstan (Қазақстан)', locale: 'kk-KZ', flagUrl: 'https://flagcdn.com/w40/kz.png' },
+                        { code: 'UZ', name: 'Uzbekistan (Oʻzbekiston)', locale: 'uz-UZ', flagUrl: 'https://flagcdn.com/w40/uz.png' },
+                        { code: 'UA', name: 'Ukraine (Україна)', locale: 'uk-UA', flagUrl: 'https://flagcdn.com/w40/ua.png' },
+                        { code: 'BY', name: 'Belarus (Беларусь)', locale: 'be-BY', flagUrl: 'https://flagcdn.com/w40/by.png' },
+                        { code: 'LT', name: 'Lithuania (Lietuva)', locale: 'lt-LT', flagUrl: 'https://flagcdn.com/w40/lt.png' },
+                        { code: 'LV', name: 'Latvia (Latvija)', locale: 'lv-LV', flagUrl: 'https://flagcdn.com/w40/lv.png' },
+                        { code: 'EE', name: 'Estonia (Eesti)', locale: 'et-EE', flagUrl: 'https://flagcdn.com/w40/ee.png' },
+                        { code: 'IE', name: 'Ireland (Éire)', locale: 'en-IE', flagUrl: 'https://flagcdn.com/w40/ie.png' },
+                        { code: 'IS', name: 'Iceland (Ísland)', locale: 'is-IS', flagUrl: 'https://flagcdn.com/w40/is.png' },
+                        { code: 'LU', name: 'Luxembourg', locale: 'fr-LU', flagUrl: 'https://flagcdn.com/w40/lu.png' },
+                        { code: 'MT', name: 'Malta', locale: 'mt-MT', flagUrl: 'https://flagcdn.com/w40/mt.png' },
+                        { code: 'CY', name: 'Cyprus (Κύπρος)', locale: 'el-CY', flagUrl: 'https://flagcdn.com/w40/cy.png' }
+                    ],
+                    // 搜索关键词
+                    searchKeyword: ''
+                }
+            },
+            computed: {
+                // 过滤后的国家列表（支持搜索）
+                filteredCountries() {
+                    if (!this.searchKeyword) {
+                        return this.countries;
+                    }
+                    const keyword = this.searchKeyword.toLowerCase();
+                    return this.countries.filter(country =>
+                        country.name.toLowerCase().includes(keyword) ||
+                        country.code.toLowerCase().includes(keyword)
+                    );
+                }
+            },
+            methods: {
+                // 检查是否可以提交
+                canSubmit() {
+                    // 检查所有必填字段
+                    const hasCountry = this.formData.country !== '';
+                    const hasDocumentType = this.formData.documentType !== '';
+                    const hasFirstName = this.formData.firstName.trim() !== '';
+                    const hasLastName = this.formData.lastName.trim() !== '';
+                    const hasDocumentNumber = this.formData.documentNumber.trim() !== '';
+
+                    // 检查是否有验证错误
+                    const noErrors = !this.errors.firstName &&
+                                   !this.errors.lastName &&
+                                   !this.errors.documentNumber &&
+                                   !this.errors.country;
+
+                    // 检查是否上传了所有必需的证件
+                    const requiredUploads = this.getUploadTypes();
+                    const hasAllUploads = requiredUploads.every(type => this.formData.documents[type.key]);
+
+                    return hasCountry && hasDocumentType && hasFirstName && hasLastName &&
+                           hasDocumentNumber && noErrors && hasAllUploads;
+                },
+                
+                // 根据证件类型获取上传要求
+                getUploadTypes() {
+                    const uploadTypes = {
+                        'passport': [
+                            { key: 'passport_info', label: '护照个人信息页' },
+                            { key: 'passport_photo', label: '护照头像页' }
+                        ],
+                        'id_card': [
+                            { key: 'id_front', label: '身份证正面' },
+                            { key: 'id_back', label: '身份证反面' }
+                        ],
+                        'driving_license': [
+                            { key: 'license_front', label: '驾驶证正面' },
+                            { key: 'license_back', label: '驾驶证反面' }
+                        ],
+                        'residence_permit': [
+                            { key: 'permit_front', label: '永久居留证正面' },
+                            { key: 'permit_back', label: '永久居留证反面' }
+                        ]
+                    };
+                    return uploadTypes[this.formData.documentType] || [];
+                },
+                
+                // 获取上传说明文字
+                getUploadDescription() {
+                    const descriptions = {
+                        'passport': '请上传护照的个人信息页和头像页',
+                        'id_card': '请上传身份证的正面和反面',
+                        'driving_license': '请上传驾驶证的正面和反面',
+                        'residence_permit': '请上传永久居留证的正面和反面'
+                    };
+                    return descriptions[this.formData.documentType] || '';
+                },
+                
+                // 文件上传前的检查
+                beforeUpload(file) {
+                    const isImage = file.type.startsWith('image/');
+                    const isLt5M = file.size / 1024 / 1024 < 5;
+                    
+                    if (!isImage) {
+                        this.$message.error('只能上传图片文件!');
+                        return false;
+                    }
+                    if (!isLt5M) {
+                        this.$message.error('上传图片大小不能超过 5MB!');
+                        return false;
+                    }
+                    return true;
+                },
+                
+                // 文件上传成功回调
+                handleUploadSuccess(response, file, uploadKey) {
+                    // 这里应该处理实际的上传响应
+                    // 现在使用本地预览
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.$set(this.formData.documents, uploadKey, e.target.result);
+                    };
+                    reader.readAsDataURL(file.raw || file);
+                    
+                    this.$message.success('上传成功!');
+                },
+                
+                // 获取国家名称
+                getCountryName(countryCode) {
+                    const country = this.countries.find(c => c.code === countryCode);
+                    return country ? country.name : countryCode;
+                },
+                
+                // 获取证件类型名称
+                getDocumentTypeName(documentType) {
+                    const types = {
+                        'passport': '护照',
+                        'id_card': '身份证',
+                        'driving_license': '驾驶证',
+                        'residence_permit': '永久居留证'
+                    };
+                    return types[documentType] || documentType;
+                },
+                
+                // 提交表单
+                async submitForm() {
+                    // 提交前进行完整验证
+                    if (!this.validateForm() || !this.canSubmit()) {
+                        this.$message.error('请完善所有必填信息');
+                        return;
+                    }
+
+                    this.submitting = true;
+
+                    try {
+                        // 这里应该调用实际的提交接口
+                        await this.mockSubmit();
+                        
+                        this.$message.success('认证信息提交成功！我们将在1-3个工作日内完成审核。');
+                        
+                        // 可以在这里处理提交成功后的逻辑
+                        // 比如跳转到结果页面或关闭当前页面
+                        setTimeout(() => {
+                            // 模拟跳转或关闭页面
+                            if (window.parent && window.parent !== window) {
+                                // 如果在iframe中，可以通过postMessage通知父页面
+                                window.parent.postMessage({
+                                    type: 'KYC_SUBMIT_SUCCESS',
+                                    data: this.formData
+                                }, '*');
+                            }
+                        }, 2000);
+                        
+                    } catch (error) {
+                        console.error('提交失败:', error);
+                        this.$message.error('提交失败，请稍后重试');
+                    } finally {
+                        this.submitting = false;
+                    }
+                },
+                
+                // 模拟提交接口
+                mockSubmit() {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            // 模拟成功
+                            if (Math.random() > 0.1) {
+                                resolve({
+                                    success: true,
+                                    message: '提交成功'
+                                });
+                            } else {
+                                reject(new Error('网络错误'));
+                            }
+                        }, 2000);
+                    });
+                },
+
+                // 表单验证方法
+                validateFirstName() {
+                    const firstName = this.formData.firstName.trim();
+                    if (!firstName) {
+                        this.errors.firstName = '请输入名字';
+                        return false;
+                    }
+                    if (firstName.length < 2) {
+                        this.errors.firstName = '名字至少需要2个字符';
+                        return false;
+                    }
+                    if (!/^[a-zA-Z\u4e00-\u9fa5\s]+$/.test(firstName)) {
+                        this.errors.firstName = '名字只能包含字母、中文和空格';
+                        return false;
+                    }
+                    this.errors.firstName = '';
+                    return true;
+                },
+
+                validateLastName() {
+                    const lastName = this.formData.lastName.trim();
+                    if (!lastName) {
+                        this.errors.lastName = '请输入姓氏';
+                        return false;
+                    }
+                    if (lastName.length < 2) {
+                        this.errors.lastName = '姓氏至少需要2个字符';
+                        return false;
+                    }
+                    if (!/^[a-zA-Z\u4e00-\u9fa5\s]+$/.test(lastName)) {
+                        this.errors.lastName = '姓氏只能包含字母、中文和空格';
+                        return false;
+                    }
+                    this.errors.lastName = '';
+                    return true;
+                },
+
+                validateDocumentNumber() {
+                    const docNumber = this.formData.documentNumber.trim();
+                    if (!docNumber) {
+                        this.errors.documentNumber = '请输入证件号码';
+                        return false;
+                    }
+
+                    // 根据证件类型进行不同的验证
+                    switch (this.formData.documentType) {
+                        case 'id_card':
+                            if (!/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(docNumber)) {
+                                this.errors.documentNumber = '请输入正确的身份证号码';
+                                return false;
+                            }
+                            break;
+                        case 'passport':
+                            if (!/^[a-zA-Z0-9]{6,20}$/.test(docNumber)) {
+                                this.errors.documentNumber = '护照号码应为6-20位字母和数字';
+                                return false;
+                            }
+                            break;
+                        default:
+                            if (docNumber.length < 6) {
+                                this.errors.documentNumber = '证件号码至少需要6位';
+                                return false;
+                            }
+                    }
+
+                    this.errors.documentNumber = '';
+                    return true;
+                },
+
+                // 验证整个表单
+                validateForm() {
+                    let isValid = true;
+
+                    // 验证国家选择
+                    if (!this.formData.country) {
+                        this.errors.country = '请选择居住国家或地区';
+                        isValid = false;
+                    } else {
+                        this.errors.country = '';
+                    }
+
+                    // 验证个人信息
+                    isValid = this.validateFirstName() &&
+                             this.validateLastName() &&
+                             this.validateDocumentNumber() &&
+                             isValid;
+
+                    return isValid;
+                }
+            },
+            
+            mounted() {
+                // 页面加载完成后的初始化
+                console.log('KYC H5 页面已加载，包含', this.countries.length, '个国家和地区');
+
+                // 设置加载完成状态
+                this.$nextTick(() => {
+                    this.isLoading = false;
+                });
+
+                // 监听来自父页面的消息（如果在iframe中）
+                window.addEventListener('message', (event) => {
+                    if (event.data.type === 'INIT_KYC_DATA') {
+                        // 可以接收父页面传递的初始数据
+                        if (event.data.userData) {
+                            // 预填充用户数据
+                            Object.assign(this.formData, event.data.userData);
+                        }
+                    }
+                });
+
+                // 阻止页面滚动回弹（iOS Safari）
+                document.addEventListener('touchmove', function(e) {
+                    if (e.target.closest('.content')) {
+                        return;
+                    }
+                    e.preventDefault();
+                }, { passive: false });
+            }
+        });
+    </script>
+</body>
+</html>
